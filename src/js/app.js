@@ -17,6 +17,14 @@ submitButton.addEventListener('click', function () {
       const questionShow = document.createTextNode(recievedObj.question)
       questionField.appendChild(questionShow)
       theBody.appendChild(questionField)
+      const answerInput = document.createElement('input')
+      answerInput.type = 'text'
+      theBody.appendChild(answerInput)
+      const answerButton = document.createElement('input')
+      answerButton.id = 'answerSubmit'
+      answerButton.type = 'submit'
+      answerButton.value = 'Send'
+      theBody.appendChild(answerButton)
     })
   })
 })
