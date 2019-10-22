@@ -8,7 +8,6 @@ let userNameString = ''
 let urlLink = 'http://vhost3.lnu.se:20080/question/1'
 let givenAnswer = null
 let recievedObj = {}
-const finalScore = 0
 function removeNameEntering () {
   const divMain = document.querySelector('#inputName')
   const toRemove = document.querySelector('#toBeRemoved')
@@ -17,19 +16,26 @@ function removeNameEntering () {
 function saveScore () {
   const scoreObj = {
     name: userNameString,
-    time: totalTime,
-    score: finalScore
+    time: totalTime
   }
   localStorage.setItem(scoreObj.name, JSON.stringify(scoreObj))
 }
 function showScore () {
-  const theBody = document.querySelector('body')
+  const divScoreBoard = document.createElement('div')
   for (let i = 0; i < localStorage.length; i++) {
     const playerScore = document.createElement('li')
     console.log(JSON.parse(localStorage.getItem(localStorage.key(i))))
     playerScore.textContent = JSON.parse(localStorage.getItem(localStorage.key(i))).name + ' ' + JSON.parse(localStorage.getItem(localStorage.key(i))).time
-    theBody.appendChild(playerScore)
+    divScoreBoard.appendChild(playerScore)
   }
+  theBody.appendChild(divScoreBoard)
+  const restartButton = document.createElement('input')
+  restartButton.type = 'submit'
+  restartButton.value = 'Restart'
+  theBody.appendChild(restartButton)
+  restartButton.addEventListener('click', () => {
+    document.location.reload(true)
+  })
 }
 function removePrevious () {
   while (divMain.firstChild) {
