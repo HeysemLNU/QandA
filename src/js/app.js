@@ -2,8 +2,7 @@ const submitButton = document.getElementById('button')
 let totalTime = 0
 const userName = document.querySelector('#nameOfUser')
 let userNameString = ''
-const urlLink = 'http://vhost3.lnu.se:20080/question/1'
-let willYouCountinue = false
+let urlLink = 'http://vhost3.lnu.se:20080/question/1'
 let givenAnswer = null
 let recievedObj = {}
 const finalScore = 0
@@ -54,7 +53,6 @@ submitButton.addEventListener('click', function () {
         console.log(countDown)
         countDown++
         if (countDown === 20) {
-          willYouCountinue = false
           totalTime += countDown
           clearInterval(timer)
           console.log('No you didnt')
@@ -64,10 +62,22 @@ submitButton.addEventListener('click', function () {
       }, 1000)
       answerButton.addEventListener('click', () => {
         givenAnswer = answerInput.value
-        willYouCountinue = true
         totalTime += countDown
         console.log(totalTime)
         clearInterval(timer)
+        const sendAsnwerObj = {
+          answer: givenAnswer
+        }
+        urlLink = recievedObj.nextURL
+        window.fetch(urlLink, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sendAsnwerObj)
+        }).then(responseReply => {
+          responseReply.json().then(responseObj => { recievedObj = responseObj }).then(() => {
+            console.log(recievedObj.message)
+          })
+        })
       })
     })
   })
