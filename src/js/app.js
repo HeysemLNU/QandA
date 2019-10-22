@@ -1,4 +1,6 @@
 const messageForMulti = 'You got your question! Now send me which alternative that is right (the key) as the answer via HTTP POST to the nextURL in JSON-format'
+const theBody = document.querySelector('body')
+const divMain = document.querySelector('#inputName')
 const submitButton = document.getElementById('button')
 let totalTime = 0
 const userName = document.querySelector('#nameOfUser')
@@ -29,12 +31,38 @@ function showScore () {
     theBody.appendChild(playerScore)
   }
 }
+function removePrevious () {
+  while (divMain.firstChild) {
+    divMain.removeChild(divMain.firstChild)
+  }
+}
 function mainEvent () {
   window.fetch(urlLink).then(responseFromServer => {
     responseFromServer.json().then(finalParse => { console.log(finalParse); recievedObj = finalParse }).then(() => {
-      if (recievedObj.message === messageForMulti) { console.log('its multi') } else {
-        const theBody = document.querySelector('body')
-        const divMain = document.querySelector('#inputName')
+      if (recievedObj.message === messageForMulti) {
+        removePrevious()
+        console.log('its multi')
+        const questionField = document.createElement('div')
+        const questionShow = document.createTextNode(recievedObj.question)
+        questionField.appendChild(questionShow)
+        divMain.appendChild(questionField)
+        const options = Object.values(recievedObj.alternatives)
+        for (const choiceSelect of options) {
+          const pick = document.createElement('input')
+          pick.type = 'radio'
+          pick.name = 'userChoice'
+          pick.textContent = choiceSelect
+          pick.value = choiceSelect
+          console.log(pick.textContent)
+          const spaces = document.createElement('br')
+          const nameOfButton = document.createElement('label')
+          nameOfButton.textContent = choiceSelect
+          divMain.appendChild(pick)
+          divMain.appendChild(nameOfButton)
+          divMain.appendChild(spaces)
+        }
+      } else {
+        removePrevious()
         const questionField = document.createElement('div')
         const questionShow = document.createTextNode(recievedObj.question)
         questionField.appendChild(questionShow)
