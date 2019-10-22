@@ -47,13 +47,16 @@ function mainEvent () {
         questionField.appendChild(questionShow)
         divMain.appendChild(questionField)
         const options = Object.values(recievedObj.alternatives)
+        let idNum = 0
         for (const choiceSelect of options) {
+          idNum++
           const pick = document.createElement('input')
           pick.type = 'radio'
           pick.name = 'userChoice'
           pick.textContent = choiceSelect
           pick.value = choiceSelect
-          console.log(pick.textContent)
+          pick.id = 'alt' + idNum
+          console.log(pick.id)
           const spaces = document.createElement('br')
           const nameOfButton = document.createElement('label')
           nameOfButton.textContent = choiceSelect
@@ -61,6 +64,55 @@ function mainEvent () {
           divMain.appendChild(nameOfButton)
           divMain.appendChild(spaces)
         }
+        const answerButton2 = document.createElement('input')
+        answerButton2.id = 'answerSubmit2'
+        answerButton2.type = 'submit'
+        answerButton2.value = 'Send'
+        divMain.appendChild(answerButton2)
+        let countDown = 0
+        const timer = setInterval(() => {
+          console.log(countDown)
+          countDown++
+          if (countDown === 20) {
+            totalTime += countDown
+            clearInterval(timer)
+            console.log('No you didnt')
+            theBody.removeChild(divMain)
+            showScore()
+          }
+        }, 1000)
+        answerButton2.addEventListener('click', () => {
+          for (let i = 1; i < idNum + 1; i++) {
+            const objId = '#alt' + i
+            const radioSelector = document.querySelector(objId)
+            if (radioSelector.checked === true) {
+              givenAnswer = radioSelector.id
+              totalTime += countDown
+              console.log(totalTime)
+              clearInterval(timer)
+              const sendAsnwerObj = {
+                answer: givenAnswer
+              }
+              urlLink = recievedObj.nextURL
+              console.log(givenAnswer)
+              console.log(urlLink)
+              window.fetch(urlLink, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sendAsnwerObj)
+              }).then(responseReply => {
+                responseReply.json().then(responseObj => { recievedObj = responseObj }).then(() => {
+                  console.log(recievedObj.message)
+                  if (recievedObj.message === 'Correct answer!') {
+                    urlLink = recievedObj.nextURL
+                    console.log('you reached here')
+                    return mainEvent()
+                  }
+                })
+              })
+            }
+          }
+        })
       } else {
         removePrevious()
         const questionField = document.createElement('div')
@@ -104,7 +156,7 @@ function mainEvent () {
             body: JSON.stringify(sendAsnwerObj)
           }).then(responseReply => {
             responseReply.json().then(responseObj => { recievedObj = responseObj }).then(() => {
-              console.log(recievedObj.message)
+              console.log(recievedObj)
               if (recievedObj.message === 'Correct answer!') {
                 urlLink = recievedObj.nextURL
                 console.log('you reached here')
