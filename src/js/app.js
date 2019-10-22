@@ -1,7 +1,7 @@
 const submitButton = document.getElementById('button')
+let totalTime = 0
 const userName = document.querySelector('#nameOfUser')
 const urlLink = 'http://vhost3.lnu.se:20080/question/1'
-let countDown = 0
 let willYouCountinue = false
 let givenAnswer = null
 let recievedObj = {}
@@ -28,12 +28,13 @@ submitButton.addEventListener('click', function () {
       answerButton.type = 'submit'
       answerButton.value = 'Send'
       theBody.appendChild(answerButton)
-
+      let countDown = 0
       const timer = setInterval(() => {
         console.log(countDown)
         countDown++
         if (countDown === 20) {
           willYouCountinue = false
+          totalTime += countDown
           clearInterval(timer)
           console.log('No you didnt')
         }
@@ -41,6 +42,7 @@ submitButton.addEventListener('click', function () {
       answerButton.addEventListener('click', () => {
         givenAnswer = answerInput.value
         willYouCountinue = true
+        totalTime += countDown
         countDown = 20
         clearInterval(timer)
         console.log('yes you did')
