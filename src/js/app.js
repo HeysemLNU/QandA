@@ -102,11 +102,22 @@ function mainEvent () {
                 body: JSON.stringify(sendAsnwerObj)
               }).then(responseReply => {
                 responseReply.json().then(responseObj => { recievedObj = responseObj }).then(() => {
-                  console.log(recievedObj.message)
+                  console.log(recievedObj)
                   if (recievedObj.message === 'Correct answer!') {
-                    urlLink = recievedObj.nextURL
-                    console.log('you reached here')
-                    return mainEvent()
+                    const checkForNext = Object.keys(recievedObj)
+                    for (const checkForNextObj of checkForNext) {
+                      if (checkForNextObj === 'nextURL') {
+                        urlLink = recievedObj.nextURL
+                        console.log('you reached here')
+                        return mainEvent()
+                      }
+                    }
+                    theBody.removeChild(divMain)
+                    saveScore()
+                    showScore()
+                  } else {
+                    theBody.removeChild(divMain)
+                    showScore()
                   }
                 })
               })
@@ -161,6 +172,9 @@ function mainEvent () {
                 urlLink = recievedObj.nextURL
                 console.log('you reached here')
                 return mainEvent()
+              } else {
+                theBody.removeChild(divMain)
+                showScore()
               }
             })
           })
