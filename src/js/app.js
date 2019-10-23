@@ -32,7 +32,7 @@ function showScore () {
   const restartButton = document.createElement('input')
   restartButton.type = 'submit'
   restartButton.value = 'Restart'
-  theBody.appendChild(restartButton)
+  divScoreBoard.appendChild(restartButton)
   restartButton.addEventListener('click', () => {
     document.location.reload(true)
   })
@@ -151,7 +151,6 @@ function mainEvent () {
           if (countDown === 20) {
             totalTime += countDown
             clearInterval(timer)
-            console.log('No you didnt')
             theBody.removeChild(divMain)
             showScore()
           }
